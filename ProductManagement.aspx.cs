@@ -13,10 +13,7 @@ namespace WebApplication5
     {
         string connectionstring = @"Data Source=HANIYATJ\SQLEXPRESS;Initial Catalog=chasinglooks1;Integrated Security=True";
 
-
         public class Product
-
-
         {
             public string ProductName { get; set; }
             public string Category { get; set; }
@@ -31,6 +28,7 @@ namespace WebApplication5
                 DisplayAllProducts();
             }
         }
+
         private void DisplayProductDetails(int productId)
         {
             using (SqlConnection conn = new SqlConnection(connectionstring))
@@ -56,6 +54,7 @@ namespace WebApplication5
                 }
             }
         }
+
         private void DisplayAllProducts()
         {
             using (SqlConnection conn = new SqlConnection(connectionstring))
@@ -63,10 +62,9 @@ namespace WebApplication5
                 conn.Open();
 
                 string query = "SELECT p.Product_ID, p.Product_name, p.Quantity, p.Price, p.Loyalty_discount, p.Descriptionn, p.Category_ID, MAX(i.Imagee) AS Front_URL, MIN(i.Imagee) AS Back_URL " +
-      "FROM Product p " +
-      "JOIN Product_images i ON p.Product_ID = i.Product_ID " +
-      "GROUP BY p.Product_ID, p.Product_name, p.Quantity, p.Price, p.Loyalty_discount, p.Descriptionn, p.Category_ID";
-
+                               "FROM Product p " +
+                               "JOIN Product_images i ON p.Product_ID = i.Product_ID " +
+                               "GROUP BY p.Product_ID, p.Product_name, p.Quantity, p.Price, p.Loyalty_discount, p.Descriptionn, p.Category_ID";
 
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
@@ -83,7 +81,6 @@ namespace WebApplication5
                             int categoryid = reader.GetInt32(6);
                             string frontUrl = reader.GetString(7);
                             string backUrl = reader.GetString(8);
-
 
                             // Display product details dynamically
                             DisplayProductDiv(productId, productName, quantity, price, loyaltyDiscount, description, categoryid, frontUrl, backUrl);
@@ -120,15 +117,11 @@ namespace WebApplication5
             productDisplayContainer.Controls.Add(productDiv);
         }
 
-
         private void ViewProductDetails(int productId)
         {
-
             DisplayProductDetails(productId);
         }
 
-
-       
         protected void BtnAddNewProduct_Click(object sender, EventArgs e)
         {
             // Logic to add a new product
@@ -145,9 +138,6 @@ namespace WebApplication5
                 TextBox2.Text = "1"; // Set a default value or any valid category ID
             }
             int categoryid = int.Parse(TextBox2.Text);
-            //Response.Write("Category ID entered: " + categoryid + "<br/>");
-            //Response.Write("Front URL: " + fronturl + "<br/>");
-            //Response.Write("Back URL: " + backurl + "<br/>");
 
             using (SqlConnection conn = new SqlConnection(connectionstring))
             {
@@ -156,7 +146,7 @@ namespace WebApplication5
                     conn.Open(); // Open the connection here
 
                     // Your initial query for inserting into the Product table
-                    String query = "INSERT INTO Product (Product_name, Quantity, Price, Descriptionn, Loyalty_discount, Category_ID) " +
+                    string query = "INSERT INTO Product (Product_name, Quantity, Price, Descriptionn, Loyalty_discount, Category_ID) " +
                                    "VALUES (@productName, @quantity, @price, @Description, @loyaltyDiscount, " +
                                    "(SELECT Category_ID FROM Category WHERE Category_ID = @categoryid))";
 
@@ -177,7 +167,6 @@ namespace WebApplication5
                     using (SqlCommand getIdCmd = new SqlCommand("SELECT MAX(Product_ID) FROM Product", conn))
                     {
                         productId = Convert.ToInt32(getIdCmd.ExecuteScalar());
-                      //  Response.Write("Product ID: " + productId + "<br/>");
                     }
 
                     // Insert into ProductImages table for fronturl
@@ -195,18 +184,10 @@ namespace WebApplication5
                         imageCmdBack.Parameters.AddWithValue("@productId", productId);
                         imageCmdBack.ExecuteNonQuery();
                     }
-                    conn.Close();
-                    using (SqlCommand getIdCmd = new SqlCommand("SELECT MAX(Product_ID) FROM Product", conn))
-                    {
-                        productId = Convert.ToInt32(getIdCmd.ExecuteScalar());
-                      //  Response.Write("Product ID: " + productId + "<br/>");
-                    }
 
                     // Display the details of the newly added product
-
                     DisplayProductDetails(productId);
                     Server.Transfer("Inventory_Management.aspx", true);
-
                 }
                 catch (Exception ex)
                 {
@@ -219,8 +200,6 @@ namespace WebApplication5
         protected void onupdate(object sender, EventArgs e)
         {
             Response.Redirect("update.aspx");
-
-
         }
 
         protected void OnDelete(object sender, EventArgs e)
@@ -230,8 +209,6 @@ namespace WebApplication5
             using (SqlConnection conn = new SqlConnection(connectionstring))
             {
                 string query = "DELETE FROM Product WHERE Product_name = @productName";
-                Console.WriteLine("Executing SQL query: " + query);
-
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@productName", deleteName);
@@ -252,25 +229,10 @@ namespace WebApplication5
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine(ex.ToString());
                         Response.Write("Error: " + ex.Message);
-                    }
-                    finally
-                    {
-                        if (conn.State == ConnectionState.Open)
-                        {
-                            conn.Close();
-                        }
                     }
                 }
             }
         }
-
-
-
-
-  
     }
-
-
 }

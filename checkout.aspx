@@ -181,7 +181,7 @@
 
             <asp:Panel ID="buttonPanel" runat="server">
          <button type="button" id="btnConfirmOrder" onclick="showCheckoutModal()">Confirm Order</button>
-                <asp:Button ID="btnLogout" OnClientClick="Logout();" runat="server" Text="Logout" />
+                <asp:Button ID="btnLogout" OnClientClick="Logout(event);" runat="server" Text="Logout" />
             </asp:Panel>
 
         </div>
@@ -217,8 +217,9 @@
                  // Redirect to main.aspx
                  window.location.replace('main.aspx');
 
-                 event.preventDefault();
-
+                 if (event) {
+                     event.preventDefault();
+                 }
              }
 
              function showCheckoutModal(message) {
